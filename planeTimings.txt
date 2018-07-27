@@ -1,0 +1,41 @@
+// planeTimings.txt
+// Written by Curtis Rueden
+// Last updated on 2017 March 15 by Christine Dixon to remove exposure times (not supported for .lsm files)
+// Uses Bio-Formats to print the chosen file's plane timings to the Log.
+
+macro "PlaneTimings"{
+
+run("Bio-Formats Macro Extensions");
+
+id = File.openDialog("Choose a file");
+print("Image path: " + id);
+
+Ext.setId(id);
+Ext.getImageCount(imageCount);
+print("Plane count: " + imageCount);
+
+creationDate = "";
+Ext.getImageCreationDate(creationDate);
+print("Creation date: " + creationDate);
+
+//Make a new array to put the timings in
+deltaT = newArray(imageCount);
+exposureTime = newArray(imageCount);
+//makes a new array: What is it putting in the array? Just a number?
+print("Plane deltas (seconds since experiment began):");
+for (no=0; no<imageCount; no++) {
+  Ext.getPlaneTimingDeltaT(deltaT[no], no);
+  
+//seems to fail getting exposuretime: Not supported for lsm
+//Ext.getPlaneTimingExposureTime(exposureTime[no], no);
+
+  if (deltaT[no] == deltaT[no]) { // not NaN
+    s = "\t" + deltaT[no];
+
+    }
+    print(s);
+  }
+}
+print("Complete.");
+
+}
